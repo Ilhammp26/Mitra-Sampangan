@@ -8,6 +8,7 @@ class Landing extends Component
 {
     public function render()
     {
-        return view('livewire.page.landing');
+        $title['title'] = 'Welcome - MITRA SAMPANGAN';
+        return view('livewire.page.landing')->layoutData($title);
     }
 }

@@ -8,7 +8,7 @@ class Dashboard extends Component
 {
     public function render()
     {
-        $title['title'] = 'Dashboard - MITRA Sampangan';
+        $title['title'] = 'Dashboard - MITRA SAMPANGAN';
         return view('livewire.page.admin.dashboard')->layoutData($title);
     }
 }

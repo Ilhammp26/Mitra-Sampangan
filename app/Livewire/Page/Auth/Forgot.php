@@ -8,6 +8,7 @@ class Forgot extends Component
 {
     public function render()
     {
-        return view('livewire.page.auth.forgot');
+        $title['title'] = 'Reset Password - MITRA SAMPANGAN';
+        return view('livewire.page.auth.forgot')->layoutData($title);
     }
 }

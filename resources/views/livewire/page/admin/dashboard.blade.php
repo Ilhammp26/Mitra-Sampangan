@@ -1,9 +1,14 @@
+{{-- <x-layouts.app bodyClass="vertical light"> --}}
 <div>
     @include('components.partials.admin.navbar')     
     @include('components.partials.admin.sidebar')
     <main role="main" class="main-content">
         <div class="container-fluid">
           <div class="row justify-content-center">
+            <div class="col">
+              <h5>Selamat Datang, Admin</h5>
+              <h3 class="page-title">Ringkasan</h3>
+            </div>
             <div class="col-12">
               <div class="row">
                 <div class="col-md-6 col-xl-3 mb-4">
@@ -16,7 +21,7 @@
                           </span>
                         </div>
                         <div class="col pr-0">                          
-                          <p class="small text-muted mb-0">Total Pelanggan</p>
+                          <p class="small text-muted mb-0">Booking Berhasil</p>
                           <span class="h5 mb-0">100</span>
                           <span class="small text-success">Pelanggan</span>
                         </div>
@@ -34,7 +39,7 @@
                           </span>
                         </div>
                         <div class="col pr-0">
-                          <p class="small text-muted mb-0">Total Pesanan</p>
+                          <p class="small text-muted mb-0">Booking Gagal</p>
                           <span class="h5 mb-0">125</span>
                           <span class="small text-success">Pesanan</span>
                         </div>
@@ -52,9 +57,9 @@
                           </span>
                         </div>
                         <div class="col pr-0">
-                          <p class="small text-muted mb-0">Total Pendapatan</p>
-                          <span class="h5 mb-0">Rp 15.000.000</span>
-                          <span class="small text-success">/Hari</span>
+                          <p class="small text-muted mb-0">Total Booking</p>
+                          <span class="h5 mb-0">225</span>
+                          <span class="small text-success">Pelanggan</span>
                         </div>
                       </div>
                     </div>
@@ -72,7 +77,7 @@
                         <div class="col pr-0">
                           <p class="small text-muted mb-0">Pendapatan</p>
                           <span class="h5 mb-0">Rp 15.000.000</span>
-                          <span class="small text-success">/Bln</span>
+                          <span class="small text-success">/Hari</span>
                         </div>
                       </div>
                     </div>
@@ -85,5 +90,5 @@
           @include('components.partials.tabel_pesanan')          
         </div> <!-- .container-fluid -->
     </main> <!-- main -->
-    </div>
 </div>
+{{-- <x-layouts.app> --}}

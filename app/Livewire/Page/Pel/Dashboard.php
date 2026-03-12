@@ -8,6 +8,7 @@ class Dashboard extends Component
 {
     public function render()
     {
-        return view('livewire.page.pel.dashboard');
+        $title['title'] = 'Beranda - MITRA SAMPANGAN';
+        return view('livewire.page.pel.dashboard')->layoutData($title);
     }
 }

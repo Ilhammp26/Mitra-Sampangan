@@ -12025,6 +12025,59 @@ a.uppy-Dashboard-poweredBy {
   .uppy-ScreenCapture-button--video:hover {
     background-color: #bc1828; }
 
+  /* ======================
+    MODE TANPA SIDEBAR
+    ====================== */
+  .no-sidebar .wrapper {
+      margin-left: 0 !important;
+      padding-left: 0 !important;
+  }
+
+  .no-sidebar .main-content {
+      margin-left: 0 !important;
+  }
+
+  /* Konten pelanggan */
+  .customer-content {
+      padding-top: 24px;
+      width: 100%;
+  }
+
+  .customer-content .container {
+      max-width: 1140px;
+  }
+
+  .hero-section {
+      min-height: 100vh;
+      /* background: url('/assets/images/lapangan1.jpg') no-repeat center center/cover; */
+      background-image: linear-gradient(
+        rgba(0, 0, 0, 0.45),
+        rgba(0, 0, 0, 0.45)), 
+        url('/assets/images/lapangan1.jpg') ;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+
+      display: flex;
+      align-items: center;
+  }
+
+  .logout-link:hover {
+    color: red !important;
+  }
+
+  .back-arrow {
+    color: #6c757d; /* warna normal (abu-abu) */
+    transition: 0.3s;
+    text-decoration: none;
+  }
+
+  .back-arrow:hover {
+    color: #0d6efd;
+    transform: translateX(-3px);
+  }
+
+
 @media only screen and (min-width: 820px) {
   .uppy-Dashboard--modal.uppy-Dashboard--animateOpenClose > .uppy-Dashboard-inner {
     animation: uppy-Dashboard-slideDownAndFadeIn 0.3s cubic-bezier(0, 0, 0.2, 1); }
