@@ -1,29 +1,37 @@
 <div>
-    <main role="main" class="customer-content">
-        <div class="content-wrapper mx-auto"> 
+    @include('components.partials.pel.navbar')
+    @include('components.partials.pel.sidebar')
+    <main role="main" class="main-content">
+        <div class="content-wrapper mx-auto">
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-md-8">
                         <div class="card shadow mb-4">
                             <div class="card-body">
-                                
+
                                 @if (session()->has('success'))
-                                    <div class="alert alert-success">{{ session('success') }}</div>
+                                <div class="alert alert-success">{{ session('success') }}</div>
                                 @endif
                                 @if (session()->has('uploadError'))
-                                    <div class="alert alert-danger">{{ session('uploadError') }}</div>
+                                <div class="alert alert-danger">{{ session('uploadError') }}</div>
                                 @endif
                                 @error('uploadError')
-                                    <div class="alert alert-danger">{{ $message }}</div>
+                                <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
+
+                                <div class="d-flex align-items-center mb-3">
+                                    {{-- <a href="{{ url()->previous() }}" class="btn btn-sm btn-light mr-3">
+                                    <i class="fe fe-arrow-left fe-14 mr-1"></i> Kembali
+                                    </a> --}}
+                                </div>
 
                                 <div class="text-center mb-4">
                                     <h3 class="page-title">Instruksi Pembayaran</h3>
                                     <p class="text-muted">Selesaikan pembayaran Anda sebelum waktu habis.</p>
                                     @if($booking->status === \App\Enums\OrderStatus::WAITING_PAYMENT->value)
-                                        <div class="mt-2 py-2 px-4 rounded bg-light d-inline-block border border-danger">
-                                            <h4 class="mb-0 text-danger font-weight-bold" id="countdown">--:--:--</h4>
-                                        </div>
+                                    <div class="mt-2 py-2 px-4 rounded bg-light d-inline-block border border-danger">
+                                        <h4 class="mb-0 text-danger font-weight-bold" id="countdown">--:--:--</h4>
+                                    </div>
                                     @endif
                                 </div>
 
@@ -57,9 +65,9 @@
                                             <input type="file" class="custom-file-input" id="proof" wire:model="proof" accept="image/jpeg,image/png,image/webp">
                                             <label class="custom-file-label" for="proof">
                                                 @if($proof)
-                                                    {{ $proof->getClientOriginalName() }}
+                                                {{ $proof->getClientOriginalName() }}
                                                 @else
-                                                    Pilih file gambar (Max 3MB)...
+                                                Pilih file gambar (Max 3MB)...
                                                 @endif
                                             </label>
                                         </div>
@@ -70,15 +78,15 @@
                                     </div>
 
                                     @if ($proof)
-                                        <div class="mt-3 mb-3 text-center">
-                                            <p class="text-muted mb-1">Preview:</p>
-                                            <img src="{{ $proof->temporaryUrl() }}" class="img-fluid img-thumbnail rounded" style="max-height: 250px;">
-                                        </div>
+                                    <div class="mt-3 mb-3 text-center">
+                                        <p class="text-muted mb-1">Preview:</p>
+                                        <img src="{{ $proof->temporaryUrl() }}" class="img-fluid img-thumbnail rounded" style="max-height: 250px;">
+                                    </div>
                                     @endif
 
-                                    <div class="d-flex justify-content-end mt-4">
-                                        <button type="submit" class="btn btn-success btn-lg px-5" 
-                                            wire:loading.attr="disabled" 
+                                    <div class="d-flex justify-content-center mt-4">
+                                        <button type="submit" class="btn btn-success btn-lg px-5"
+                                            wire:loading.attr="disabled"
                                             {{ $booking->status !== \App\Enums\OrderStatus::WAITING_PAYMENT->value ? 'disabled' : '' }}>
                                             <span wire:loading wire:target="submit" class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>
                                             Kirim Bukti Pembayaran
@@ -86,7 +94,7 @@
                                     </div>
                                 </form>
                             </div>
-                        </div>       
+                        </div>
                     </div>
                 </div>
             </div>
@@ -97,11 +105,11 @@
     <script>
         document.addEventListener('livewire:initialized', () => {
             const expiredAt = new Date("{{ $booking->payment_expired_at->format('Y-m-d H:i:s') }}").getTime();
-            
+
             const timer = setInterval(function() {
                 const now = new Date().getTime();
                 const distance = expiredAt - now;
-                
+
                 if (distance < 0) {
                     clearInterval(timer);
                     document.getElementById("countdown").innerHTML = "WAKTU HABIS";
@@ -112,10 +120,10 @@
                     const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                     const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                     const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                    
-                    document.getElementById("countdown").innerHTML = 
-                        String(hours).padStart(2, '0') + ":" + 
-                        String(minutes).padStart(2, '0') + ":" + 
+
+                    document.getElementById("countdown").innerHTML =
+                        String(hours).padStart(2, '0') + ":" +
+                        String(minutes).padStart(2, '0') + ":" +
                         String(seconds).padStart(2, '0');
                 }
             }, 1000);

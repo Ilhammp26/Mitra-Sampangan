@@ -4,6 +4,7 @@ use App\Livewire\Page\Landing;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
+use App\Livewire\Page\Profile;
 use App\Livewire\Page\Auth\Login;
 use App\Livewire\Page\Auth\Forgot;
 use App\Livewire\Page\Pel\Beranda;
@@ -20,6 +21,9 @@ use App\Livewire\Page\Admin\Akun\Pelanggan;
 use App\Livewire\Page\Booking\Pesan;
 use App\Livewire\Page\Pel\Pesanan as PelPesanan;
 use App\Livewire\Page\Payment\Upload;
+
+use App\Livewire\Page\Admin\Laporan\Transaksi;
+use App\Livewire\Page\Admin\Laporan\Pendapatan;
 
 Route::get('/', Landing::class)->name('landing');
 Route::get('/login', Login::class)->name('login');
@@ -44,6 +48,11 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/akun/wasit', Wasit::class)->name('admin.akun.wasit');
     Route::get('/admin/akun/pelanggan', Pelanggan::class)->name('admin.akun.pelanggan');
 
+    // Laporan
+    Route::get('/admin/laporan/transaksi', Transaksi::class)->name('admin.laporan.transaksi');
+    Route::get('/admin/laporan/pendapatan', Pendapatan::class)->name('admin.laporan.pendapatan');
+
+
     Route::get('/admin/payment-preview/{path}', function ($path) {
         $decodedPath = base64_decode($path);
         if (!\Illuminate\Support\Facades\Storage::disk('local')->exists($decodedPath)) {
@@ -55,6 +64,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
 Route::middleware(['auth'])->group(function () {
     // Semua role yang sudah login
+    Route::get('/profile', Profile::class)->name('profile');
     Route::get('/booking/pesan', Pesan::class)->name('booking.pesan');
     Route::get('/payment/{invoice_code}', Upload::class)->name('payment.upload');
 });

@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Models\Booking;
 use App\Enums\OrderStatus;
 use Illuminate\Support\Facades\Storage;
+use App\Models\User;
+use App\Notifications\BookingStatusNotification;
 
 class PaymentService
 {
@@ -31,6 +33,13 @@ class PaymentService
             'status' => OrderStatus::WAITING_VERIFICATION,
         ]);
 
+        User::where('role', 'admin')->get()->each(function ($admin) use ($booking) {
+            $admin->notify(new BookingStatusNotification(
+                'Bukti Pembayaran Diunggah',
+                "Invoice {$booking->invoice_code} telah mengunggah bukti pembayaran dan menunggu verifikasi."
+            ));
+        });
+
         return $booking;
     }
 
@@ -43,6 +52,14 @@ class PaymentService
             'status' => OrderStatus::PAID,
         ]);
         
+        $user = User::find($booking->user_id);
+        if ($user) {
+            $user->notify(new BookingStatusNotification(
+                'Pembayaran Diterima',
+                "Pembayaran untuk pesanan {$booking->invoice_code} telah diverifikasi. Jadwal Anda sudah dikonfirmasi."
+            ));
+        }
+
         return $booking;
     }
 
@@ -65,6 +82,14 @@ class PaymentService
                 'payment_proof' => null,
                 'payment_retry_count' => $newRetryCount,
             ]);
+            
+            $user = User::find($booking->user_id);
+            if ($user) {
+                $user->notify(new BookingStatusNotification(
+                    'Pesanan Dibatalkan',
+                    "Pembayaran untuk {$booking->invoice_code} ditolak dua kali. Pesanan otomatis dibatalkan."
+                ));
+            }
         } else {
             // Allow 1 retry, reset to WAITING_PAYMENT
             // As decided in plan, maybe give them an extra 60 mins to fix
@@ -74,6 +99,14 @@ class PaymentService
                 'payment_retry_count' => $newRetryCount,
                 'payment_expired_at' => now()->addMinutes(60),
             ]);
+            
+            $user = User::find($booking->user_id);
+            if ($user) {
+                $user->notify(new BookingStatusNotification(
+                    'Pembayaran Ditolak',
+                    "Bukti pembayaran untuk {$booking->invoice_code} tidak valid. Silakan unggah ulang sebelum waktu habis."
+                ));
+            }
         }
 
         return $booking;

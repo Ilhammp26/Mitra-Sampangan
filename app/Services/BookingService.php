@@ -6,6 +6,8 @@ use App\Models\Booking;
 use App\Enums\OrderStatus;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use App\Models\User;
+use App\Notifications\BookingStatusNotification;
 
 class BookingService
 {
@@ -41,7 +43,7 @@ class BookingService
         return DB::transaction(function () use ($userId, $tanggal, $mulai, $selesai, $harga) {
             $invoiceCode = 'MS-' . date('Ymd', strtotime($tanggal)) . '-' . strtoupper(Str::random(6));
 
-            return Booking::create([
+            $booking = Booking::create([
                 'user_id'             => $userId,
                 'tanggal'             => $tanggal,
                 'jam_mulai'           => $mulai,
@@ -54,6 +56,15 @@ class BookingService
                 'payment_retry_count' => 0,
                 'payment_proof'       => null,
             ]);
+
+            User::where('role', 'admin')->get()->each(function ($admin) use ($booking) {
+                $admin->notify(new BookingStatusNotification(
+                    'Pesanan Baru',
+                    "Pesanan baru dengan invoice {$booking->invoice_code} menunggu pembayaran."
+                ));
+            });
+
+            return $booking;
         });
     }
 

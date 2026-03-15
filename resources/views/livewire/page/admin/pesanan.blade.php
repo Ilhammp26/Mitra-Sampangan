@@ -136,6 +136,8 @@
                                 <div class="dropdown-menu dropdown-menu-right">
                                     @if($booking->status === \App\Enums\OrderStatus::WAITING_VERIFICATION)
                                         <a class="dropdown-item text-primary" href="#" wire:click.prevent="selectBooking({{ $booking->id }})" data-toggle="modal" data-target="#proofModal">Lihat Bukti & Verifikasi</a>
+                                    @else
+                                        <a class="dropdown-item text-primary" href="#" wire:click.prevent="selectBooking({{ $booking->id }})" data-toggle="modal" data-target="#proofModal">Detail Pembayaran</a>
                                     @endif
                                 </div>
                             </div>
@@ -157,8 +159,8 @@
                         <div class="modal-dialog modal-dialog-centered" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="proofModalLabel">Verifikasi Pembayaran</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <h5 class="modal-title" id="proofModalLabel">Bukti Pembayaran</h5>
+                                    <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
                                         <i class="fe fe-x fe-12"></i>
                                     </button>
                                 </div>
@@ -183,11 +185,11 @@
                                     @endif
                                 </div>
                                 <div class="modal-footer justify-content-between">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                                    @if($selectedBooking)
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">Tutup</button>
+                                    @if($selectedBooking && $selectedBooking->status === \App\Enums\OrderStatus::WAITING_VERIFICATION)
                                         <div>
-                                            <button type="button" class="btn btn-danger mr-2" wire:click="reject({{ $selectedBooking->id }})">Tolak</button>
-                                            <button type="button" class="btn btn-success" wire:click="approve({{ $selectedBooking->id }})">Terima (Lunas)</button>
+                                            <button type="button" class="btn btn-danger mr-2" wire:click="reject({{ $selectedBooking->id }})" data-dismiss="modal" data-bs-dismiss="modal">Tolak</button>
+                                            <button type="button" class="btn btn-success" wire:click="approve({{ $selectedBooking->id }})" data-dismiss="modal" data-bs-dismiss="modal">Terima (Lunas)</button>
                                         </div>
                                     @endif
                                 </div>
