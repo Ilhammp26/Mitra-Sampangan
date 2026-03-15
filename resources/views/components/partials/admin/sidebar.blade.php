@@ -68,13 +68,6 @@
                         {{-- <span class="badge badge-pill badge-primary">New</span> --}}
                     </a>
                 </li>
-                <li class="nav-item w-100">
-                    <a class="nav-link" href="{{ route('admin.invoice') }}">
-                        <i class="fe fe-calendar fe-16"></i>
-                        <span class="ml-3 item-text">Invoice</span>
-                        {{-- <span class="badge badge-pill badge-primary">New</span> --}}
-                    </a>
-                </li>
             </ul>
             <p class="text-muted nav-heading mt-4 mb-1">
                 <span>Laporan</span>

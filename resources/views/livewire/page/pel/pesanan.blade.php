@@ -10,41 +10,77 @@
                             <h3 class="page-title">Riwayat Pesanan</h3>
                         </div>
                     </div>
+
+                    @if (session()->has('success'))
+                        <div class="alert alert-success">{{ session('success') }}</div>
+                    @endif
+                    @if (session()->has('error'))
+                        <div class="alert alert-danger">{{ session('error') }}</div>
+                    @endif
+
                     <table class="table border table-hover bg-white">
                         <thead>
                             <tr role="row">
                                 <th>#</th>
                                 <th>Invoice</th>
                                 <th>Tanggal Pesan</th>
-                                <th>Tanggal Main</th>
-                                <th>Waktu Main</th>
-                                <th>Total Waktu</th>
+                                <th>Jadwal Main</th>
                                 <th>Total Harga</th>
                                 <th>Status</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
+                            @forelse($bookings as $index => $booking)
                             <tr>
-                                <td>1</td>
-                                <td>INV-0101001</td>
-                                <td>2020-12-26 01:32:21</td>
-                                <td>01-01-2026</td>
-                                <td>18.00 - 20.00 WIB</td>
-                                <td>2 Jam</td>
-                                <td>Rp 200.000</td>
-                                <td><span class="badge badge-pill badge-success mr-2">Selesai</span></td>
+                                <td>{{ $bookings->firstItem() + $index }}</td>
+                                <td><strong>{{ $booking->invoice_code }}</strong></td>
+                                <td>{{ $booking->created_at->format('d M Y, H:i') }}</td>
+                                <td>
+                                    {{ $booking->tanggal->format('d M Y') }}<br>
+                                    <small class="text-muted">{{ substr($booking->jam_mulai, 0, 5) }} - {{ substr($booking->jam_selesai, 0, 5) }} WIB</small>
+                                </td>
+                                <td>Rp {{ number_format($booking->jumlah_bayar, 0, ',', '.') }}</td>
+                                <td>
+                                    <span class="badge badge-pill badge-{{ $booking->status->color() }}">
+                                        {{ $booking->status->label() }}
+                                    </span>
+                                    @if($booking->status === \App\Enums\OrderStatus::WAITING_PAYMENT && $booking->payment_expired_at)
+                                        <br><small class="text-danger">
+                                            Batas: {{ $booking->payment_expired_at->format('d M H:i') }}
+                                        </small>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if($booking->status === \App\Enums\OrderStatus::WAITING_PAYMENT)
+                                        <a href="{{ route('payment.upload', $booking->invoice_code) }}"
+                                           class="btn btn-sm btn-warning mb-1">
+                                            <i class="fe fe-credit-card fe-12 mr-1"></i> Bayar Sekarang
+                                        </a><br>
+                                        <button wire:click="cancelBooking({{ $booking->id }})" wire:confirm="Apakah Anda yakin ingin membatalkan pesanan ini?" class="btn btn-sm btn-outline-danger">
+                                            <i class="fe fe-x fe-12 mr-1"></i> Batalkan
+                                        </button>
+                                    @elseif($booking->status === \App\Enums\OrderStatus::WAITING_VERIFICATION)
+                                        <span class="text-info small"><i class="fe fe-clock fe-12"></i> Menunggu verifikasi admin</span>
+                                    @elseif($booking->status === \App\Enums\OrderStatus::PAID)
+                                        <span class="text-success small"><i class="fe fe-check-circle fe-12"></i> Lunas</span>
+                                    @else
+                                        <span class="text-muted small">—</span>
+                                    @endif
+                                </td>
                             </tr>
+                            @empty
+                            <tr>
+                                <td colspan="7" class="text-center py-4 text-muted">
+                                    Belum ada pesanan. <a href="{{ route('booking.pesan') }}">Buat pesanan sekarang</a>
+                                </td>
+                            </tr>
+                            @endforelse
                         </tbody>
                     </table>
-                    {{-- <nav aria-label="Table Paging" class="my-3">
-                        <ul class="pagination justify-content-end mb-0">
-                            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                            <li class="page-item"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item active"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item"><a class="page-link" href="#">Next</a></li>
-                        </ul>
-                    </nav> --}}
+                    <nav aria-label="Table Paging" class="my-3">
+                        {{ $bookings->links('pagination::bootstrap-4') }}
+                    </nav>
                 </div> <!-- .col-12 -->
             </div>
         </div> <!-- .container-fluid -->
