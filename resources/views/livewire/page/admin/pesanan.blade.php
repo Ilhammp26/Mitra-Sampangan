@@ -9,214 +9,205 @@
                     <h3 class="page-title">Pesanan</h3>
                 </div>
                 <div class="col-12">
+                    @if (session()->has('success'))
+                        <div class="alert alert-success">{{ session('success') }}</div>
+                    @endif
+                    @if (session()->has('error'))
+                        <div class="alert alert-danger">{{ session('error') }}</div>
+                    @endif
+
                     <div class="row mb-4 items-align-center">
                         <div class="col-md">
                         <ul class="nav nav-pills justify-content-start">
                             <li class="nav-item">
-                            <a class="nav-link active bg-transparent pr-2 pl-0 text-primary" href="#">All <span class="badge badge-pill bg-primary text-white ml-2">3</span></a>
+                            <a class="nav-link {{ $statusFilter === '' ? 'active bg-transparent pr-2 pl-0 text-primary' : 'text-muted px-2' }} cursor-pointer" style="cursor:pointer" wire:click="setFilter('')">
+                                All <span class="badge badge-pill {{ $statusFilter === '' ? 'bg-primary text-white' : 'bg-white border text-muted' }} ml-2">{{ $counts['all'] }}</span>
+                            </a>
                             </li>
                             <li class="nav-item">
-                            <a class="nav-link text-muted px-2" href="#">DP <span class="badge badge-pill bg-white border text-muted ml-2">1</span></a>
+                            <a class="nav-link {{ $statusFilter === \App\Enums\OrderStatus::WAITING_PAYMENT->value ? 'active bg-transparent text-primary' : 'text-muted' }} px-2" style="cursor:pointer" wire:click="setFilter('{{ \App\Enums\OrderStatus::WAITING_PAYMENT->value }}')">
+                                Menunggu Pembayaran <span class="badge badge-pill {{ $statusFilter === \App\Enums\OrderStatus::WAITING_PAYMENT->value ? 'bg-primary text-white' : 'bg-white border text-muted' }} ml-2">{{ $counts['waiting_payment'] }}</span>
+                            </a>
                             </li>
                             <li class="nav-item">
-                            <a class="nav-link text-muted px-2" href="#">Lunas <span class="badge badge-pill bg-white border text-muted ml-2">1</span></a>
+                            <a class="nav-link {{ $statusFilter === \App\Enums\OrderStatus::WAITING_VERIFICATION->value ? 'active bg-transparent text-primary' : 'text-muted' }} px-2" style="cursor:pointer" wire:click="setFilter('{{ \App\Enums\OrderStatus::WAITING_VERIFICATION->value }}')">
+                                Menunggu Verifikasi <span class="badge badge-pill {{ $statusFilter === \App\Enums\OrderStatus::WAITING_VERIFICATION->value ? 'bg-primary text-white' : 'bg-white border text-muted' }} ml-2">{{ $counts['waiting_verification'] }}</span>
+                            </a>
                             </li>
                             <li class="nav-item">
-                            <a class="nav-link text-muted px-2" href="#">Cancel <span class="badge badge-pill bg-white border text-muted ml-2">1</span></a>
+                            <a class="nav-link {{ $statusFilter === \App\Enums\OrderStatus::PAID->value ? 'active bg-transparent text-primary' : 'text-muted' }} px-2" style="cursor:pointer" wire:click="setFilter('{{ \App\Enums\OrderStatus::PAID->value }}')">
+                                Lunas <span class="badge badge-pill {{ $statusFilter === \App\Enums\OrderStatus::PAID->value ? 'bg-primary text-white' : 'bg-white border text-muted' }} ml-2">{{ $counts['paid'] }}</span>
+                            </a>
+                            </li>
+                            <li class="nav-item">
+                            <a class="nav-link {{ $statusFilter === \App\Enums\OrderStatus::CANCELLED->value ? 'active bg-transparent text-primary' : 'text-muted' }} px-2" style="cursor:pointer" wire:click="setFilter('{{ \App\Enums\OrderStatus::CANCELLED->value }}')">
+                                Cancel <span class="badge badge-pill {{ $statusFilter === \App\Enums\OrderStatus::CANCELLED->value ? 'bg-primary text-white' : 'bg-white border text-muted' }} ml-2">{{ $counts['cancelled'] }}</span>
+                            </a>
+                            </li>
+                            <li class="nav-item">
+                            <a class="nav-link {{ $statusFilter === \App\Enums\OrderStatus::EXPIRED->value ? 'active bg-transparent text-primary' : 'text-muted' }} px-2" style="cursor:pointer" wire:click="setFilter('{{ \App\Enums\OrderStatus::EXPIRED->value }}')">
+                                Expired <span class="badge badge-pill {{ $statusFilter === \App\Enums\OrderStatus::EXPIRED->value ? 'bg-primary text-white' : 'bg-white border text-muted' }} ml-2">{{ $counts['expired'] }}</span>
+                            </a>
                             </li>
                         </ul>
                         </div>
-                        <div class="col-md-auto ml-auto text-right">
-                            <span class="small bg-white border py-1 px-2 rounded mr-2 d-none d-lg-inline">
-                                <a href="#" class="text-muted"><i class="fe fe-x mx-1"></i></a>
-                                <span class="text-muted">Status : <strong>Pending</strong></span>
+                        <div class="col-md-auto ml-auto text-right d-flex align-items-center">
+                            @if($search)
+                            <span class="small bg-white border py-1 px-2 rounded mr-2 d-none d-lg-inline mt-1">
+                                <a href="#" wire:click.prevent="clearFilter('search')" class="text-muted"><i class="fe fe-x mx-1"></i></a>
+                                <span class="text-muted">Pencarian : <strong>{{ $search }}</strong></span>
                             </span>
-                            <span class="small bg-white border py-1 px-2 rounded mr-2 d-none d-lg-inline">
-                                <a href="#" class="text-muted"><i class="fe fe-x mx-1"></i></a>
-                                <span class="text-muted">April 14, 2020 - May 13, 2020</span>
+                            @endif
+
+                            @if($dateStart || $dateEnd)
+                            <span class="small bg-white border py-1 px-2 rounded mr-2 d-none d-lg-inline mt-1">
+                                <a href="#" wire:click.prevent="clearFilter('date')" class="text-muted"><i class="fe fe-x mx-1"></i></a>
+                                <span class="text-muted">Tgl : <strong>{{ $dateStart ? \Carbon\Carbon::parse($dateStart)->format('d M y') : 'Awal' }} - {{ $dateEnd ? \Carbon\Carbon::parse($dateEnd)->format('d M y') : 'Akhir' }}</strong></span>
                             </span>
-                            <button type="button" class="btn" data-toggle="modal" data-target=".modal-slide"><span class="fe fe-filter fe-16 text-muted"></span></button>
-                            {{-- <button type="button" class="btn"><span class="fe fe-refresh-ccw fe-16 text-muted"></span></button> --}}
-                        </div>
-                    </div>
-                    <!-- Slide Modal -->
-                    <div class="modal fade modal-slide" tabindex="-1" role="dialog" aria-labelledby="defaultModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                            <h5 class="modal-title" id="defaultModalLabel">Filters</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <i class="fe fe-x fe-12"></i>
+                            @endif
+
+                            <button type="button" class="btn btn-sm btn-white text-muted mt-1" data-toggle="modal" data-target=".modal-filter">
+                                <span class="fe fe-filter fe-16"></span>
                             </button>
-                            </div>
-                            <div class="modal-body">
-                            <div class="p-2">
-                                <div class="form-group my-4">
-                                <p class="mb-2"><strong>Regions</strong></p>
-                                <label for="multi-select2" class="sr-only"></label>
-                                <select class="form-control select2-multi" id="multi-select2">
-                                    <optgroup label="Mountain Time Zone">
-                                    <option value="AZ">Arizona</option>
-                                    <option value="CO">Colorado</option>
-                                    <option value="ID">Idaho</option>
-                                    <option value="MT">Montana</option>
-                                    <option value="NE">Nebraska</option>
-                                    <option value="NM">New Mexico</option>
-                                    <option value="ND">North Dakota</option>
-                                    <option value="UT">Utah</option>
-                                    <option value="WY">Wyoming</option>
-                                    </optgroup>
-                                    <optgroup label="Central Time Zone">
-                                    <option value="AL">Alabama</option>
-                                    <option value="AR">Arkansas</option>
-                                    <option value="IL">Illinois</option>
-                                    <option value="IA">Iowa</option>
-                                    <option value="KS">Kansas</option>
-                                    <option value="KY">Kentucky</option>
-                                    <option value="LA">Louisiana</option>
-                                    <option value="MN">Minnesota</option>
-                                    <option value="MS">Mississippi</option>
-                                    <option value="MO">Missouri</option>
-                                    <option value="OK">Oklahoma</option>
-                                    <option value="SD">South Dakota</option>
-                                    <option value="TX">Texas</option>
-                                    <option value="TN">Tennessee</option>
-                                    <option value="WI">Wisconsin</option>
-                                    </optgroup>
-                                </select>
-                                </div> <!-- form-group -->
-                                <div class="form-group my-4">
-                                <p class="mb-2">
-                                    <strong>Payment</strong>
-                                </p>
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="customCheck1">
-                                    <label class="custom-control-label" for="customCheck1">Paypal</label>
-                                </div>
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="customCheck2">
-                                    <label class="custom-control-label" for="customCheck2">Credit Card</label>
-                                </div>
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="customCheck1-1" checked>
-                                    <label class="custom-control-label" for="customCheck1">Wire Transfer</label>
-                                </div>
-                                </div> <!-- form-group -->
-                                <div class="form-group my-4">
-                                <p class="mb-2">
-                                    <strong>Types</strong>
-                                </p>
-                                <div class="custom-control custom-radio">
-                                    <input type="radio" id="customRadio1" name="customRadio" class="custom-control-input">
-                                    <label class="custom-control-label" for="customRadio1">End users</label>
-                                </div>
-                                <div class="custom-control custom-radio">
-                                    <input type="radio" id="customRadio2" name="customRadio" class="custom-control-input" checked>
-                                    <label class="custom-control-label" for="customRadio2">Whole Sales</label>
-                                </div>
-                                </div> <!-- form-group -->
-                                <div class="form-group my-4">
-                                <p class="mb-2">
-                                    <strong>Completed</strong>
-                                </p>
-                                <div class="custom-control custom-switch">
-                                    <input type="checkbox" class="custom-control-input" id="customSwitch1">
-                                    <label class="custom-control-label" for="customSwitch1">Include</label>
-                                </div>
-                                </div> <!-- form-group -->
-                            </div>
-                            </div>
-                            <div class="modal-footer">
-                            <button type="button" class="btn mb-2 btn-primary btn-block">Apply</button>
-                            <button type="button" class="btn mb-2 btn-secondary btn-block">Reset</button>
-                            </div>
-                        </div>
                         </div>
                     </div>
-                    <table class="table border table-hover bg-white">
+
+                    <!-- Filter Modal -->
+                    <div wire:ignore.self class="modal fade modal-filter modal-slide" tabindex="-1" role="dialog" aria-labelledby="filterModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="filterModalLabel">Filters</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <i class="fe fe-x fe-12"></i>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="p-2">
+                                        <div class="form-group my-4">
+                                            <p class="mb-2"><strong>Tanggal Mulai</strong></p>
+                                            <input type="date" class="form-control" wire:model.live="dateStart">
+                                        </div>
+                                        <div class="form-group my-4">
+                                            <p class="mb-2"><strong>Tanggal Akhir</strong></p>
+                                            <input type="date" class="form-control" wire:model.live="dateEnd">
+                                        </div>
+                                        <div class="form-group my-4">
+                                            <p class="mb-2"><strong>Pencarian</strong></p>
+                                            <input type="text" class="form-control" placeholder="Invoice, nama, total..." wire:model.live.debounce.400ms="search">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn mb-2 btn-secondary btn-block" wire:click="clearFilter('all')" data-dismiss="modal">Reset Filter</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <table class="table border table-hover bg-white mb-4">
                         <thead>
                         <tr role="row">
-                            <th>ID</th>
+                            <th>Invoice</th>
                             <th>Tanggal Pesan</th>
-                            <th>Name</th>
+                            <th>Nama Pemesan</th>
                             <th>Tanggal Main</th>
                             <th>Waktu Main</th>
-                            <th>Invoice</th>
+                            <th>Total (Rp)</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
                         </thead>
                         <tbody>
+                        @forelse($bookings as $booking)
                         <tr>
-                            <td>0001</td>
-                            <td>2020-12-26 01:32:21</td>
-                            <td>Mamat Timur</td>
-                            <td>01-01-2026</td>
-                            <td>18.00 - 20.00 WIB</td>
-                            <td> INV-0101001</td>
-                            <td><span class="badge badge-pill badge-success mr-2">Lunas</span></td>
+                            <td><strong>{{ $booking->invoice_code }}</strong></td>
+                            <td>{{ $booking->created_at->format('Y-m-d H:i') }}</td>
+                            <td>{{ $booking->user->name ?? '-' }}</td>
+                            <td>{{ $booking->tanggal->format('Y-m-d') }}</td>
+                            <td>{{ substr($booking->jam_mulai, 0, 5) }} - {{ substr($booking->jam_selesai, 0, 5) }}</td>
+                            <td>{{ number_format($booking->jumlah_bayar, 0, ',', '.') }}</td>
+                            <td><span class="badge badge-pill badge-{{ $booking->status->color() }} mr-2" style="cursor:default">{{ $booking->status->label() }}</span></td>
                             <td>
                             <div class="dropdown">
                                 <button class="btn btn-sm dropdown-toggle more-vertical" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="text-muted sr-only">Action</span>
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-right">
-                                    <a class="dropdown-item" href="#">Edit</a>
+                                    @if($booking->status === \App\Enums\OrderStatus::WAITING_VERIFICATION)
+                                        <a class="dropdown-item text-primary" href="#" wire:click.prevent="selectBooking({{ $booking->id }})" data-toggle="modal" data-target="#proofModal">Lihat Bukti & Verifikasi</a>
+                                    @endif
                                 </div>
                             </div>
                             </td>
                         </tr>
+                        @empty
                         <tr>
-                            <td>0002</td>
-                            <td>2020-12-26 01:32:21</td>
-                            <td>Budi Anggara</td>
-                            <td>01-01-2026</td>
-                            <td>20.00 - 22.00 WIB</td>
-                            <td> INV-0101002</td>
-                            <td><span class="badge badge-pill badge-warning mr-2">DP</span></td>
-                            <td>
-                            <div class="dropdown">
-                                <button class="btn btn-sm dropdown-toggle more-vertical" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="text-muted sr-only">Action</span>
-                                </button>
-                                <div class="dropdown-menu dropdown-menu-right">
-                                    <a class="dropdown-item" href="#">Edit</a>
-                                </div>
-                            </div>
-                            </td>
+                            <td colspan="8" class="text-center py-4">Tidak ada data pesanan.</td>
                         </tr>
-                        <tr>
-                            <td>0003</td>
-                            <td>2020-12-26 01:32:21</td>
-                            <td>Abdur Arsyad</td>
-                            <td>01-01-2026</td>
-                            <td>20.00 - 22.00 WIB</td>
-                            <td> INV-0101003</td>
-                            <td><span class="badge badge-pill badge-danger mr-2">Cancel</span></td>
-                            <td>
-                            <div class="dropdown">
-                                <button class="btn btn-sm dropdown-toggle more-vertical" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="text-muted sr-only">Action</span>
-                                </button>
-                                <div class="dropdown-menu dropdown-menu-right">
-                                    <a class="dropdown-item" href="#">Edit</a>
-                                </div>
-                            </div>
-                            </td>
-                        </tr>
+                        @endforelse
                         </tbody>
                     </table>
                     <nav aria-label="Table Paging" class="my-3">
-                        <ul class="pagination justify-content-end mb-0">
-                        <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                        <li class="page-item"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item active"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item"><a class="page-link" href="#">Next</a></li>
-                        </ul>
+                        {{ $bookings->links('pagination::bootstrap-4') }}
                     </nav>
+
+                    <!-- Proof Modal -->
+                    <div class="modal fade" id="proofModal" tabindex="-1" role="dialog" aria-labelledby="proofModalLabel" aria-hidden="true" wire:ignore.self>
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="proofModalLabel">Verifikasi Pembayaran</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <i class="fe fe-x fe-12"></i>
+                                    </button>
+                                </div>
+                                <div class="modal-body text-center">
+                                    @if($selectedBooking)
+                                        <p class="mb-2">Invoice: <strong>{{ $selectedBooking->invoice_code }}</strong></p>
+                                        <p class="mb-3">Jumlah Bayar: <strong>Rp {{ number_format($selectedBooking->jumlah_bayar, 0, ',', '.') }}</strong></p>
+                                        
+                                        @if($selectedBooking->payment_proof)
+                                            <!-- Since private storage is used, we might need a controller to serve the image, but for now assuming we use a temporary URL logic or a route -->
+                                            <!-- Here we will use a workaround or secure route. Laravel's storage:link public is easier, but since you said private, we use a custom route -->
+                                            <div class="border rounded p-2 d-inline-block">
+                                                <img src="{{ route('admin.payment.preview', ['path' => base64_encode($selectedBooking->payment_proof)]) }}" class="img-fluid" style="max-height: 400px;" alt="Bukti Pembayaran">
+                                            </div>
+                                        @else
+                                            <div class="alert alert-warning">Bukti tidak ditemukan.</div>
+                                        @endif
+                                    @else
+                                        <div class="spinner-border text-primary" role="status">
+                                            <span class="sr-only">Loading...</span>
+                                        </div>
+                                    @endif
+                                </div>
+                                <div class="modal-footer justify-content-between">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                                    @if($selectedBooking)
+                                        <div>
+                                            <button type="button" class="btn btn-danger mr-2" wire:click="reject({{ $selectedBooking->id }})">Tolak</button>
+                                            <button type="button" class="btn btn-success" wire:click="approve({{ $selectedBooking->id }})">Terima (Lunas)</button>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /Proof Modal -->
                 </div>
+
             </div> <!-- .row -->          
         </div> <!-- .container-fluid -->
     </main>
 </div>
+
+@push('scripts')
+<script>
+    document.addEventListener('livewire:initialized', () => {
+        Livewire.on('close-modal', () => {
+            $('#proofModal').modal('hide');
+        });
+    });
+</script>
+@endpush

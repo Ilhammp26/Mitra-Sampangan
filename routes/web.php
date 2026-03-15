@@ -19,6 +19,7 @@ use App\Livewire\Page\Admin\Akun\Wasit;
 use App\Livewire\Page\Admin\Akun\Pelanggan;
 use App\Livewire\Page\Booking\Pesan;
 use App\Livewire\Page\Pel\Pesanan as PelPesanan;
+use App\Livewire\Page\Payment\Upload;
 
 Route::get('/', Landing::class)->name('landing');
 Route::get('/login', Login::class)->name('login');
@@ -42,11 +43,20 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/akun/staff', Staff::class)->name('admin.akun.staff');
     Route::get('/admin/akun/wasit', Wasit::class)->name('admin.akun.wasit');
     Route::get('/admin/akun/pelanggan', Pelanggan::class)->name('admin.akun.pelanggan');
+
+    Route::get('/admin/payment-preview/{path}', function ($path) {
+        $decodedPath = base64_decode($path);
+        if (!\Illuminate\Support\Facades\Storage::disk('local')->exists($decodedPath)) {
+            abort(404);
+        }
+        return response()->file(\Illuminate\Support\Facades\Storage::disk('local')->path($decodedPath));
+    })->name('admin.payment.preview');
 });
 
 Route::middleware(['auth'])->group(function () {
     // Semua role yang sudah login
     Route::get('/booking/pesan', Pesan::class)->name('booking.pesan');
+    Route::get('/payment/{invoice_code}', Upload::class)->name('payment.upload');
 });
 
 Route::post('/logout', function () {

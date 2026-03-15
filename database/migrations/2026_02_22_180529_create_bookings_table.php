@@ -14,16 +14,17 @@ return new class extends Migration
         Schema::create('bookings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('lapangan_id')->constrained()->cascadeOnDelete();
             $table->date('tanggal');
             $table->time('jam_mulai');
             $table->time('jam_selesai');
             $table->decimal('harga', 12, 2);
-            $table->enum('tipe_pembayaran', ['dp', 'lunas'])->nullable();
+            $table->string('tipe_pembayaran')->nullable(); // 'dp' or 'lunas'
             $table->decimal('jumlah_bayar', 12, 2)->nullable();
             $table->string('invoice_code')->unique();
-            $table->enum('status', ['pending', 'dp', 'lunas', 'cancel'])
-                ->default('pending');
+            $table->string('status')->default('waiting_payment');
+            $table->string('payment_proof')->nullable();
+            $table->timestamp('payment_expired_at')->nullable();
+            $table->integer('payment_retry_count')->default(0);
             $table->timestamps();
         });
     }
