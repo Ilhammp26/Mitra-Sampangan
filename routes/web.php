@@ -64,5 +64,65 @@ Route::post('/logout', function () {
     return redirect('/');
 })->name('logout');
 
+Route::get('/api/calendar/events', function (\Illuminate\Http\Request $request) {
+    $start = $request->query('start');
+    $end = $request->query('end');
+    
+    $query = \App\Models\Booking::with('user')
+        ->whereIn('status', [
+            \App\Enums\OrderStatus::WAITING_PAYMENT->value,
+            \App\Enums\OrderStatus::WAITING_VERIFICATION->value,
+            \App\Enums\OrderStatus::PAID->value
+        ]);
+        
+    if ($start) {
+        $query->where('tanggal', '>=', date('Y-m-d', strtotime($start)));
+    }
+    if ($end) {
+        $query->where('tanggal', '<=', date('Y-m-d', strtotime($end)));
+    }
+    
+    $bookings = $query->get();
+    
+    $events = $bookings->map(function ($booking) {
+        $startDT = \Carbon\Carbon::parse($booking->tanggal->format('Y-m-d') . ' ' . $booking->jam_mulai);
+        $endDT = \Carbon\Carbon::parse($booking->tanggal->format('Y-m-d') . ' ' . $booking->jam_selesai);
+        
+        $color = '#28a745'; // Paid = green
+        if ($booking->status === \App\Enums\OrderStatus::WAITING_PAYMENT) {
+            $color = '#ffc107'; // warning yellow
+        } elseif ($booking->status === \App\Enums\OrderStatus::WAITING_VERIFICATION) {
+            $color = '#17a2b8'; // info cyan
+        }
+
+        $bookerName = 'Hamba Allah';
+        $rawName = $booking->user->name ?? 'User Terhapus';
+        
+        if (Auth::check() && (Auth::user()->role === 'admin' || Auth::id() === $booking->user_id)) {
+            $bookerName = $rawName; // Full name for admin or owner
+        } else {
+            // Mask the name: "Budi" -> "B***"
+            $parts = explode(' ', $rawName);
+            $maskedParts = array_map(function($p) { 
+                return strlen($p) > 1 ? substr($p, 0, 1) . str_repeat('*', strlen($p) - 1) : $p; 
+            }, $parts);
+            $bookerName = implode(' ', $maskedParts);
+        }
+        
+        return [
+            'title' => $bookerName,
+            'start' => $startDT->toIso8601String(),
+            'end' => $endDT->toIso8601String(),
+            'color' => $color,
+            'extendedProps' => [
+                'booker_name' => $bookerName,
+                'status' => $booking->status->label()
+            ]
+        ];
+    });
+    
+    return response()->json($events);
+})->name('api.calendar.events');
+
 
 

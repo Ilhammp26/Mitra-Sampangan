@@ -10,6 +10,14 @@
                             <h3 class="page-title">Riwayat Pesanan</h3>
                         </div>
                     </div>
+
+                    @if (session()->has('success'))
+                        <div class="alert alert-success">{{ session('success') }}</div>
+                    @endif
+                    @if (session()->has('error'))
+                        <div class="alert alert-danger">{{ session('error') }}</div>
+                    @endif
+
                     <table class="table border table-hover bg-white">
                         <thead>
                             <tr role="row">
@@ -46,9 +54,12 @@
                                 <td>
                                     @if($booking->status === \App\Enums\OrderStatus::WAITING_PAYMENT)
                                         <a href="{{ route('payment.upload', $booking->invoice_code) }}"
-                                           class="btn btn-sm btn-warning">
+                                           class="btn btn-sm btn-warning mb-1">
                                             <i class="fe fe-credit-card fe-12 mr-1"></i> Bayar Sekarang
-                                        </a>
+                                        </a><br>
+                                        <button wire:click="cancelBooking({{ $booking->id }})" wire:confirm="Apakah Anda yakin ingin membatalkan pesanan ini?" class="btn btn-sm btn-outline-danger">
+                                            <i class="fe fe-x fe-12 mr-1"></i> Batalkan
+                                        </button>
                                     @elseif($booking->status === \App\Enums\OrderStatus::WAITING_VERIFICATION)
                                         <span class="text-info small"><i class="fe fe-clock fe-12"></i> Menunggu verifikasi admin</span>
                                     @elseif($booking->status === \App\Enums\OrderStatus::PAID)

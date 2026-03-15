@@ -1,54 +1,73 @@
+@php
+    use App\Models\Booking;
+    use App\Enums\OrderStatus;
+    use Illuminate\Support\Facades\Auth;
+
+    // Show upcoming booked slots (today and future, confirmed/verified/paid)
+    $jadwalBookings = Booking::with('user')
+        ->whereIn('status', [
+            OrderStatus::WAITING_PAYMENT->value,
+            OrderStatus::WAITING_VERIFICATION->value,
+            OrderStatus::PAID->value,
+        ])
+        ->where('tanggal', '>=', now()->toDateString())
+        ->orderBy('tanggal')
+        ->orderBy('jam_mulai')
+        ->limit(10)
+        ->get();
+@endphp
+
 <section>
     <div class="row justify-content-center">
         <div class="col-12">
             <div class="row align-items-center my-3">
                 <div class="col">
-                    <h3 class="page-title">Booking</h3>
+                    <h3 class="page-title">Jadwal Booking</h3>
                 </div>
             </div>
             <table class="table border table-hover bg-white">
                 <thead>
                     <tr role="row">
                         <th><strong>#</strong></th>
-                        <th><strong>Name</strong></th>
+                        <th><strong>Pemesan</strong></th>
                         <th><strong>Tanggal Main</strong></th>
                         <th><strong>Waktu Main</strong></th>
-                        <th><strong>Tanggal Pesan</strong></th>
-                        </tr>
+                        <th><strong>Status</strong></th>
+                    </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>Mamat Timur</td>
-                        <td>01-01-2026</td>
-                        <td>18.00 - 20.00 WIB</td>
-                        <td>2020-12-26 01:32:21</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Budi Anggara</td>
-                        <td>01-01-2026</td>
-                        <td>20.00 - 22.00 WIB</td>
-                        <td>2020-12-26 01:32:21</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>Abdur Arsyad</td>
-                        <td>01-01-2026</td>
-                        <td>20.00 - 22.00 WIB</td>
-                        <td>2020-12-26 01:32:21</td>
-                    </tr>
+                    @forelse($jadwalBookings as $i => $booking)
+                        @php
+                            $rawName = $booking->user->name ?? 'User Terhapus';
+                            // Full name for admin or the booking owner, masked for everyone else
+                            if (Auth::check() && (Auth::user()->role === 'admin' || Auth::id() === $booking->user_id)) {
+                                $displayName = $rawName;
+                            } else {
+                                $parts = explode(' ', $rawName);
+                                $masked = array_map(fn($p) => strlen($p) > 1 ? substr($p,0,1).str_repeat('*', strlen($p)-1) : $p, $parts);
+                                $displayName = implode(' ', $masked);
+                            }
+                        @endphp
+                        <tr>
+                            <td>{{ $i + 1 }}</td>
+                            <td>{{ $displayName }}</td>
+                            <td>{{ $booking->tanggal->translatedFormat('d M Y') }}</td>
+                            <td>{{ substr($booking->jam_mulai, 0, 5) }} – {{ substr($booking->jam_selesai, 0, 5) }} WIB</td>
+                            <td>
+                                <span class="badge badge-pill badge-{{ $booking->status->color() }}" style="cursor:default">
+                                    {{ $booking->status->label() }}
+                                </span>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="text-center py-4 text-muted">
+                                Belum ada jadwal booking mendatang.
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
-            {{-- <nav aria-label="Table Paging" class="my-3">
-                <ul class="pagination justify-content-end mb-0">
-                    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item active"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
-                </ul>
-            </nav> --}}
         </div> <!-- .col-12 -->
     </div>
 </section>

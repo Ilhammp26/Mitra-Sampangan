@@ -94,7 +94,25 @@
                 },
                 weekNumbers: true,
                 eventLimit: true, // allow "more" link when too many events
-                events: 'https://fullcalendar.io/demo-events.json'
+                events: '/api/calendar/events',
+                eventClick: function(info) {
+                    info.jsEvent.preventDefault(); // don't let the browser navigate
+                    
+                    // Format times
+                    var start = info.event.start;
+                    var end = info.event.end;
+                    
+                    var dateStr = start.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                    var timeStr = start.toLocaleTimeString('id-ID', { hour: '2-digit', minute:'2-digit' }) + ' - ' + end.toLocaleTimeString('id-ID', { hour: '2-digit', minute:'2-digit' }) + ' WIB';
+                    
+                    // Populate modal
+                    document.getElementById('modalBookerName').textContent = info.event.extendedProps.booker_name || 'Hamba Allah';
+                    document.getElementById('modalBookerDate').textContent = dateStr;
+                    document.getElementById('modalBookerTime').textContent = timeStr;
+                    
+                    // Show modal
+                    $('#eventModal').modal('show');
+                }
             });
             calendar.render();
             });
