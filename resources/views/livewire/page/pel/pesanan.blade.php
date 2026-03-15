@@ -64,7 +64,10 @@
                                         @elseif($booking->status === \App\Enums\OrderStatus::WAITING_VERIFICATION)
                                         <span class="text-info small"><i class="fe fe-clock fe-12"></i> Menunggu verifikasi admin</span>
                                         @elseif($booking->status === \App\Enums\OrderStatus::PAID)
-                                        <span class="text-success small"><i class="fe fe-check-circle fe-12"></i> Lunas</span>
+                                        <span class="text-success small"><i class="fe fe-check-circle fe-12"></i> Lunas</span><br>
+                                        <a href="{{ route('invoice.show', $booking->invoice_code) }}" target="_blank" class="btn btn-sm btn-outline-primary mt-2">
+                                            <i class="fe fe-file-text fe-12 mr-1"></i> Lihat Invoice
+                                        </a>
                                         @else
                                         <span class="text-muted small">—</span>
                                         @endif

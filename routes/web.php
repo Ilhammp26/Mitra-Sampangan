@@ -25,7 +25,10 @@ use App\Livewire\Page\Payment\Upload;
 use App\Livewire\Page\Admin\Laporan\Transaksi;
 use App\Livewire\Page\Admin\Laporan\Pendapatan;
 
+use App\Http\Controllers\InvoiceController;
+
 Route::get('/', Landing::class)->name('landing');
+Route::get('/invoice/{invoiceCode}', [InvoiceController::class, 'show'])->name('invoice.show')->middleware('auth');
 Route::get('/login', Login::class)->name('login');
 Route::get('/register', Register::class)->name('register');
 Route::get('/forgotpass', Forgot::class)->name('forgot');
@@ -44,8 +47,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/pesanan', Pesanan::class)->name('admin.pesanan');
     Route::get('/admin/invoice', Invoice::class)->name('admin.invoice');
     Route::get('/admin/akun/admin', Admin::class)->name('admin.akun.admin');
-    Route::get('/admin/akun/staff', Staff::class)->name('admin.akun.staff');
-    Route::get('/admin/akun/wasit', Wasit::class)->name('admin.akun.wasit');
     Route::get('/admin/akun/pelanggan', Pelanggan::class)->name('admin.akun.pelanggan');
 
     // Laporan
@@ -77,27 +78,27 @@ Route::post('/logout', function () {
 Route::get('/api/calendar/events', function (\Illuminate\Http\Request $request) {
     $start = $request->query('start');
     $end = $request->query('end');
-    
+
     $query = \App\Models\Booking::with('user')
         ->whereIn('status', [
             \App\Enums\OrderStatus::WAITING_PAYMENT->value,
             \App\Enums\OrderStatus::WAITING_VERIFICATION->value,
             \App\Enums\OrderStatus::PAID->value
         ]);
-        
+
     if ($start) {
         $query->where('tanggal', '>=', date('Y-m-d', strtotime($start)));
     }
     if ($end) {
         $query->where('tanggal', '<=', date('Y-m-d', strtotime($end)));
     }
-    
+
     $bookings = $query->get();
-    
+
     $events = $bookings->map(function ($booking) {
         $startDT = \Carbon\Carbon::parse($booking->tanggal->format('Y-m-d') . ' ' . $booking->jam_mulai);
         $endDT = \Carbon\Carbon::parse($booking->tanggal->format('Y-m-d') . ' ' . $booking->jam_selesai);
-        
+
         $color = '#28a745'; // Paid = green
         if ($booking->status === \App\Enums\OrderStatus::WAITING_PAYMENT) {
             $color = '#ffc107'; // warning yellow
@@ -107,18 +108,18 @@ Route::get('/api/calendar/events', function (\Illuminate\Http\Request $request) 
 
         $bookerName = 'Hamba Allah';
         $rawName = $booking->user->name ?? 'User Terhapus';
-        
+
         if (Auth::check() && (Auth::user()->role === 'admin' || Auth::id() === $booking->user_id)) {
             $bookerName = $rawName; // Full name for admin or owner
         } else {
             // Mask the name: "Budi" -> "B***"
             $parts = explode(' ', $rawName);
-            $maskedParts = array_map(function($p) { 
-                return strlen($p) > 1 ? substr($p, 0, 1) . str_repeat('*', strlen($p) - 1) : $p; 
+            $maskedParts = array_map(function ($p) {
+                return strlen($p) > 1 ? substr($p, 0, 1) . str_repeat('*', strlen($p) - 1) : $p;
             }, $parts);
             $bookerName = implode(' ', $maskedParts);
         }
-        
+
         return [
             'title' => $bookerName,
             'start' => $startDT->toIso8601String(),
@@ -130,9 +131,6 @@ Route::get('/api/calendar/events', function (\Illuminate\Http\Request $request) 
             ]
         ];
     });
-    
+
     return response()->json($events);
 })->name('api.calendar.events');
-
-
-

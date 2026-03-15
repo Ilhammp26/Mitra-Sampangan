@@ -7,8 +7,8 @@
             <!-- nav bar -->
             <div class="w-100 mb-4 d-flex">
                 <a class="navbar-brand mx-auto mt-2 flex-fill text-center" href="{{ route('admin.dashboard') }}">
-                <img src="{{ asset('assets/images/mitra.svg') }}" id="logo" alt="Logo" class="navbar-brand-img brand-sm">
-                {{-- <svg version="1.1" id="logo" class="navbar-brand-img brand-sm" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 120 120" xml:space="preserve">
+                    <img src="{{ asset('assets/images/mitra.svg') }}" id="logo" alt="Logo" class="navbar-brand-img brand-sm">
+                    {{-- <svg version="1.1" id="logo" class="navbar-brand-img brand-sm" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 120 120" xml:space="preserve">
                     <g>
                     <polygon class="st0" points="78,105 15,105 24,87 87,87 	" />
                     <polygon class="st0" points="96,69 33,69 42,51 105,51 	" />
@@ -26,7 +26,7 @@
                 </li>
             </ul>
             <p class="text-muted nav-heading mt-4 mb-1">
-            <span>Management</span>
+                <span>Management</span>
             </p>
             <ul class="navbar-nav flex-fill w-100 mb-2">
                 <li class="nav-item dropdown">
@@ -36,13 +36,7 @@
                     </a>
                     <ul class="collapse list-unstyled pl-4 w-100" id="ui-elements">
                         <li class="nav-item">
-                        <a class="nav-link pl-3" href="{{ route('admin.akun.admin') }}"><span class="ml-1 item-text">Admin</span></a>
-                        </li>
-                        <li class="nav-item">
-                        <a class="nav-link pl-3" href="{{ route('admin.akun.staff') }}"><span class="ml-1 item-text">Staff</span></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link pl-3" href="{{ route('admin.akun.wasit') }}"><span class="ml-1 item-text">Wasit</span></a>
+                            <a class="nav-link pl-3" href="{{ route('admin.akun.admin') }}"><span class="ml-1 item-text">Admin</span></a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link pl-3" href="{{ route('admin.akun.pelanggan') }}"><span class="ml-1 item-text">Pelanggan</span></a>
