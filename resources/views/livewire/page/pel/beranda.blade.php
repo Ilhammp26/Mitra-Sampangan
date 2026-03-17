@@ -1,16 +1,17 @@
 {{-- <x-layouts.app bodyClass="light no-sidebar"> --}}
 <div>
     {{-- @include('components.partials.admin.navbar')      --}}
-    @include('components.partials.pel.navbar')     
+    @include('components.partials.pel.navbar')
+    @include('components.partials.pel.sidebar')
     {{-- @include('components.partials.admin.sidebar') --}}
-    <main role="main" class="customer-content">
-        <div class="content-wrapper mx-auto"> 
-        <div class="container">
-            <div class="row justify-content-center">
-            <div class="col">
-                {{-- <h5>Selamat Datang, User</h5> --}}
-            </div>
-            {{-- <div class="col-12">
+    <main role="main" class="main-content">
+        <div class="content-wrapper mx-auto">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col">
+                        {{-- <h5>Selamat Datang, User</h5> --}}
+                    </div>
+                    {{-- <div class="col-12">
                 <div class="row">
                 <div class="col-md-6 col-xl-3 mb-4">
                     <div class="card shadow text-white border-0">
@@ -86,13 +87,12 @@
                 </div>
                 </div> <!-- end section -->
             </div> --}}
-            </div> <!-- .row -->
-            @include('components.partials.kalender')
-            @include('components.partials.tabel_booking')          
-        </div> <!-- .container-fluid -->
+                </div> <!-- .row -->
+                @include('components.partials.kalender')
+                @include('components.partials.tabel_booking')
+            </div> <!-- .container-fluid -->
         </div> <!-- .content-wrapper -->
     </main> <!-- main -->
 </div>
 
 {{-- </x-layouts.app> --}}
-

@@ -7,29 +7,24 @@
             <input class="form-control mr-sm-2 bg-transparent border-0 pl-4 text-muted" type="search" placeholder="Type something..." aria-label="Search">
         </form> --}}
         <ul class="nav">
-            <li class="nav-item nav-notif">
-                <a class="nav-link text-muted my-2" href="#" data-toggle="modal" data-target=".modal-notif">
-                <span class="fe fe-bell fe-16"></span>
-                <span class="dot dot-md bg-success"></span>
-                </a>
-            </li>
+            @livewire('component.notification-badge')
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle text-muted pr-0" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                {{-- <span class="mr-2"><strong>Selamat datang, Admin</strong></span> --}}
-                <span class="avatar avatar-sm mt-2">
-                    <img src="/assets/avatars/face-1.jpg" alt="..." class="avatar-img rounded-circle">
-                </span>
+                    <span class="mr-2"><strong>{{ Auth::user()->name }}</strong></span>
+                    <span class="avatar avatar-sm mt-2">
+                        <img src="/assets/avatars/face-1.jpg" alt="..." class="avatar-img rounded-circle">
+                    </span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
                     <li class="nav-item">
-                        <a class="nav-link pl-3" href="#">Profile</a>
+                        <a class="nav-link pl-3" href="{{ route('profile') }}">Profile</a>
                     </li>
                     <li class="nav-item">
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                             @csrf
                         </form>
                         <a class="nav-link pl-3 logout-link" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                        Logout
+                            Logout
                         </a>
                     </li>
                 </ul>

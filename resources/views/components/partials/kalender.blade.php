@@ -18,60 +18,41 @@
                 </div>
             </div>
             <div id='calendar'></div>
-            <!-- new event modal -->
+            <!-- Event Detail Modal -->
             <div class="modal fade" id="eventModal" tabindex="-1" role="dialog" aria-labelledby="eventModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
+                <div class="modal-dialog modal-sm" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="varyModalLabel">Pesanan Baru</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body p-4">
-                    <form>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="date-input1">Tanggal Main</label>
-                            <div class="input-group">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text" id="button-addon-date"><span class="fe fe-calendar fe-16"></span></div>
-                            </div>
-                                <input type="text" class="form-control drgpicker" id="drgpicker-start" value="04/24/2020">
-                            </div>
+                            <h5 class="modal-title" id="varyModalLabel">Detail Jadwal</h5>
+                            <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
-                        <div class="form-group col-md-6">
-                            <label for="startDate">Jam Main</label>
-                            <div class="input-group">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text" id="button-addon-time"><span class="fe fe-clock fe-16"></span></div>
+                        <div class="modal-body p-4 text-center">
+                            <div class="mb-3">
+                                <span class="fe fe-user fe-32 text-primary mb-2 d-block"></span>
+                                <h4 id="modalBookerName" class="mb-0">Nama Pemesan</h4>
                             </div>
-                                <input type="text" class="form-control time-input" id="start-time" placeholder="10:00 AM">
+                            <hr>
+                            <div class="mb-2">
+                                <span class="text-muted small d-block">Tanggal Main</span>
+                                <strong id="modalBookerDate">Tanggal</strong>
+                            </div>
+                            <div class="mb-2">
+                                <span class="text-muted small d-block">Waktu Main</span>
+                                <strong id="modalBookerTime">Waktu</strong>
+                            </div>
+                            <div>
+                                <span class="text-muted small d-block">Status</span>
+                                <strong id="modalBookerStatus">Status</strong>
                             </div>
                         </div>
+                        <div class="modal-footer justify-content-center">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">Tutup</button>
                         </div>
-                        <div class="form-row">
-                        <div class="form-group">
-                            <label>Waktu Main</label>
-                            <div class="input-group">
-                            <button type="button" class="btn btn-primary mr-2">1 Jam</button>
-                            <button type="button" class="btn btn-primary mr-2">2 Jam</button>
-                            <button type="button" class="btn btn-primary mr-2">3 Jam</button>
-                            <button type="button" class="btn btn-primary mr-2">4 Jam</button>
-                            <button type="button" class="btn btn-primary">5 Jam</button> 
-                            </div>
-                        </div>
-                        </div>
-                    </form>
-                    </div>
-                    <div class="modal-footer d-flex justify-content-end">
-                    <button type="button" class="btn mb-2 btn-danger" data-dismiss="modal">Batal</button>
-                    {{-- <button type="button" class="btn mb-2 btn-danger">Batal</button> --}}
-                    <button type="button" class="btn mb-2 btn-primary">Pesan</button>
                     </div>
                 </div>
-                </div>
-            </div> <!-- new event modal -->
+            </div> <!-- event detail modal -->
         </div> <!-- .col-12 -->
     </div>
 </section>
