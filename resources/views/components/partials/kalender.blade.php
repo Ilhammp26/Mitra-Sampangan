@@ -38,9 +38,13 @@
                                 <span class="text-muted small d-block">Tanggal Main</span>
                                 <strong id="modalBookerDate">Tanggal</strong>
                             </div>
-                            <div>
+                            <div class="mb-2">
                                 <span class="text-muted small d-block">Waktu Main</span>
                                 <strong id="modalBookerTime">Waktu</strong>
+                            </div>
+                            <div>
+                                <span class="text-muted small d-block">Status</span>
+                                <strong id="modalBookerStatus">Status</strong>
                             </div>
                         </div>
                         <div class="modal-footer justify-content-center">

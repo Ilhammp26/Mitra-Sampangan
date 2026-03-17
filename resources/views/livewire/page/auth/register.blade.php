@@ -35,7 +35,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">No. WhatsApp</label>
-                        <input type="text" name="no_hp" class="form-control" placeholder="08xxxxxxxxxx" wire:model="no_wa" required>
+                        <input type="text" name="no_wa" class="form-control" placeholder="08xxxxxxxxxx" wire:model="no_wa" required>
                         @error('no_wa')
                             <small class="text-danger" role="alert">{{ $message }}</small>
                         @enderror

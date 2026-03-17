@@ -45,8 +45,8 @@
                                 <div class="form-group row">
                                     <label for="inputPhone" class="col-sm-3 col-form-label">Nomor HP</label>
                                     <div class="col-sm-9">
-                                        <input type="text" class="form-control" id="inputPhone" wire:model="no_hp">
-                                        @error('no_hp') <span class="text-danger small">{{ $message }}</span> @enderror
+                                        <input type="text" class="form-control" id="inputPhone" wire:model="no_wa">
+                                        @error('no_wa') <span class="text-danger small">{{ $message }}</span> @enderror
                                     </div>
                                 </div>
 

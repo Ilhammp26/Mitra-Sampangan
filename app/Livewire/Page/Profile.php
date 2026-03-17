@@ -11,7 +11,7 @@ class Profile extends Component
 {
     public $name;
     public $email;
-    public $no_hp;
+    public $no_wa;
     public $current_password;
     public $password;
     public $password_confirmation;
@@ -21,7 +21,7 @@ class Profile extends Component
         $user = Auth::user();
         $this->name = $user->name;
         $this->email = $user->email;
-        $this->no_hp = $user->no_hp;
+        $this->no_wa = $user->no_wa;
     }
 
     public function updateProfile()
@@ -30,7 +30,7 @@ class Profile extends Component
 
         $rules = [
             'name' => 'required|string|max:255',
-            'no_hp' => 'nullable|string|max:20',
+            'no_wa' => 'nullable|string|max:20',
             'email' => [
                 'required',
                 'string',
@@ -57,7 +57,7 @@ class Profile extends Component
 
         $user->name = $this->name;
         $user->email = $this->email;
-        $user->no_hp = $this->no_hp;
+        $user->no_wa = $this->no_wa;
 
         $user->save();
 

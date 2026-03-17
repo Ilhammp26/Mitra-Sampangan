@@ -122,8 +122,8 @@ Route::get('/api/calendar/events', function (\Illuminate\Http\Request $request) 
 
         return [
             'title' => $bookerName,
-            'start' => $startDT->toIso8601String(),
-            'end' => $endDT->toIso8601String(),
+            'start' => $startDT->format('Y-m-d\TH:i:s'),
+            'end' => $endDT->format('Y-m-d\TH:i:s'),
             'color' => $color,
             'extendedProps' => [
                 'booker_name' => $bookerName,
